@@ -1,3 +1,9 @@
+body {
+    background-image:url(./Images/background.jpg);
+    background-size: cover;
+    height: 100vh;
+}
+
 .pfp {
     display: block;
     margin: auto;
@@ -7,46 +13,27 @@
     align-items: center;
 }
 
-.socials {
-    text-align: center;
-    display: block;
-    margin: auto;
-    width: 1400px;
-    border: solid;
-    border-radius: 10px;
-    padding: 10px;
-    border-color: #6b6b6b;
-    border-width: 1px;
-}
-
-.about-me {
-    display: block;
-    margin: auto;
-    width: fit-content;
-    border: solid;
-    border-radius: 10px;
-    padding: 10px;
-    border-color: #6b6b6b;
-    border-width: 1px;
-}
-
 h1 {
     text-align: center;
+    color: white;
 }
 
 h2 {
     text-align: center;
+    color: #fcfcfc;
 }
 
 h4 {
     text-align: center;
+    color: #fcfcfc;
 }
 
 h6 {
     text-align: center;
-    color: #6b6b6b;
+    color: #ffffff;
 }
 
 p {
     text-align: center;
+    color: #fcfcfc;
 }
