@@ -443,3 +443,14 @@ terminalInput.addEventListener("keydown", (event) => {
         terminalInput.value = "";
     }
 });
+
+const scubaIcon = document.querySelector("#scuba");
+
+scubaIcon.addEventListener("click", () => {
+    if (scubaIcon.classList.contains("selected")) {
+        scubaIcon.classList.remove("selected");
+        window.location.href = "scuba.html";
+    } else {
+        scubaIcon.classList.add("selected");
+    }
+});
