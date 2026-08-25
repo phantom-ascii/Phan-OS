@@ -1,73 +1,199 @@
 function updateTime() {
-    var currentTime = new Date().toLocaleString();
-    var timeText = document.querySelector("#timeElement");
-    timeText.innerHTML = currentTime;
+  document.querySelector("#timeElement").textContent =
+    new Date().toLocaleTimeString();
 }
 
+updateTime();
 setInterval(updateTime, 1000);
 
-// Make the DIV element draggable:
-dragElement(document.getElementById("welcome"));
-
-function dragElement(elmnt) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (document.getElementById(elmnt.id + "header")) {
-    // if present, the header is where you move the DIV from:
-    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-  } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
-    elmnt.onmousedown = dragMouseDown;
-  }
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
+function openWindow(element) {
+  element.style.display = "block";
+  bringToFront(element);
 }
-
-var welcomeScreen = document.querySelector("#welcome")
 
 function closeWindow(element) {
-  element.style.display = "none"
+  element.style.display = "none";
 }
 
-function openWindow(element) {
-  element.style.display = "flex"
+function bringToFront(element) {
+  let highest = 10;
+
+  document.querySelectorAll(".window").forEach((window) => {
+    highest = Math.max(highest, parseInt(window.style.zIndex) || 10);
+  });
+
+  element.style.zIndex = highest + 1;
 }
 
-var welcomeScreenClose = document.querySelector("#welcomeclose")
+function selectIcon(element) {
+  element.classList.add("selected");
+}
 
-var welcomeScreenOpen = document.querySelector("#welcomeopen")
+function deselectIcon(element) {
+  element.classList.remove("selected");
+}
 
-welcomeScreenClose.addEventListener("click", function() {
-  closeWindow(welcomeScreen);
+function handleIconTap(icon, appWindow) {
+  if (icon.classList.contains("selected")) {
+    deselectIcon(icon);
+    openWindow(appWindow);
+  } else {
+    selectIcon(icon);
+  }
+}
+
+function dragElement(element) {
+  const header = element.querySelector(".window-header");
+
+  if (!header) return;
+
+  let startX;
+  let startY;
+  let startLeft;
+  let startTop;
+
+  header.addEventListener("mousedown", startDrag);
+
+  function startDrag(event) {
+    startX = event.clientX;
+    startY = event.clientY;
+
+    const rect = element.getBoundingClientRect();
+
+    startLeft = rect.left;
+    startTop = rect.top;
+
+    element.style.transform = "none";
+
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("mouseup", stopDrag);
+
+    bringToFront(element);
+  }
+
+  function drag(event) {
+    element.style.left = startLeft + event.clientX - startX + "px";
+    element.style.top = startTop + event.clientY - startY + "px";
+  }
+
+  function stopDrag() {
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("mouseup", stopDrag);
+  }
+}
+
+function createAppWindow(id, title, content) {
+  const windowElement = document.createElement("div");
+
+  windowElement.id = id;
+  windowElement.classList.add("window");
+
+  windowElement.innerHTML = `
+        <div class="window-header">
+            <span>${title}</span>
+            <button class="close-button">×</button>
+        </div>
+        <div class="window-content">${content}</div>
+    `;
+
+  document.body.appendChild(windowElement);
+
+  windowElement.querySelector(".close-button").addEventListener("click", () => {
+    closeWindow(windowElement);
+  });
+
+  dragElement(windowElement);
+
+  return windowElement;
+}
+
+const welcomeWindow = document.querySelector("#welcome");
+
+dragElement(welcomeWindow);
+openWindow(welcomeWindow);
+
+welcomeWindow.querySelector(".close-button").addEventListener("click", () => {
+  closeWindow(welcomeWindow);
 });
 
-welcomeScreenOpen.addEventListener("click", function() {
-  openWindow(welcomeScreen);
+const stopwatchWindow = createAppWindow(
+  "stopwatchWindow",
+  "Stopwatch",
+  `
+    <div class="stopwatch">
+        <div id="stopwatchTime">00:00:00</div>
+
+        <div class="stopwatch-buttons">
+            <button id="startStopwatch">Start</button>
+            <button id="resetStopwatch">Reset</button>
+        </div>
+    </div>
+`,
+);
+
+const stopwatchIcon = document.querySelector("#stopwatch");
+
+stopwatchIcon.addEventListener("click", () => {
+  handleIconTap(stopwatchIcon, stopwatchWindow);
 });
+
+let stopwatchStart = 0;
+let stopwatchElapsed = 0;
+let stopwatchRunning = false;
+let stopwatchFrame;
+
+const stopwatchTime = stopwatchWindow.querySelector("#stopwatchTime");
+const startStopwatch = stopwatchWindow.querySelector("#startStopwatch");
+const resetStopwatch = stopwatchWindow.querySelector("#resetStopwatch");
+
+function updateStopwatch() {
+    let elapsed = stopwatchElapsed;
+
+    if (stopwatchRunning) {
+        elapsed += performance.now() - stopwatchStart;
+    }
+
+    const milliseconds = Math.floor(elapsed % 1000);
+    const seconds = Math.floor(elapsed / 1000) % 60;
+    const minutes = Math.floor(elapsed / 60000) % 60;
+    const hours = Math.floor(elapsed / 3600000);
+
+    stopwatchTime.textContent =
+        String(hours).padStart(2, "0") + ":" +
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0") + "." +
+        String(milliseconds).padStart(3, "0");
+
+    if (stopwatchRunning) {
+        stopwatchFrame = requestAnimationFrame(updateStopwatch);
+    }
+}
+
+startStopwatch.addEventListener("click", () => {
+    if (stopwatchRunning) {
+        stopwatchElapsed += performance.now() - stopwatchStart;
+        stopwatchRunning = false;
+        cancelAnimationFrame(stopwatchFrame);
+        startStopwatch.textContent = "Start";
+        updateStopwatch();
+    } else {
+        stopwatchStart = performance.now();
+        stopwatchRunning = true;
+        startStopwatch.textContent = "Stop";
+        updateStopwatch();
+    }
+});
+
+resetStopwatch.addEventListener("click", () => {
+    stopwatchRunning = false;
+    cancelAnimationFrame(stopwatchFrame);
+
+    stopwatchStart = 0;
+    stopwatchElapsed = 0;
+
+    startStopwatch.textContent = "Start";
+
+    updateStopwatch();
+});
+
+updateStopwatch();

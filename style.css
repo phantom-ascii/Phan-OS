@@ -4,6 +4,12 @@ body {
     height: 100vh;
 }
 
+
+.selected {
+    width: 150px;
+    background-color: #595a5a73;
+}
+
 .top-bar {
     position: absolute;
     width: 1515px; 
