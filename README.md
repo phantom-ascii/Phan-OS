@@ -4,14 +4,19 @@
 
 Im a 14 yr old nerd on the internet and i made this web os as an alternative to giving people a personal website. this os is ALL ABOUT ME...
 
-It has 7 apps:
+It has now 10 apps compared to the old 7:
 a stopwatch
 a socials page
 an about me
 a welcome page
 a phantom.ascii cookie clicker
 a terminal
-and another i dont dare mention
+another i dont dare mention
+a clock app
+a notes app with local save
+and a calculator
+
+I also fixed the selection bug where you could select multiple apps.
 
 No AI was used in the making of this.
 If you want to rip anything from this repo, go ahead (it's open source anyways).
