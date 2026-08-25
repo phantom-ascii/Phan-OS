@@ -454,3 +454,142 @@ scubaIcon.addEventListener("click", () => {
         scubaIcon.classList.add("selected");
     }
 });
+
+const calculatorWindow = createAppWindow(
+    "calculatorWindow",
+    "Calculator",
+    `
+        <div class="calculator">
+            <div id="calculatorDisplay" class="calculator-display">
+                0
+            </div>
+            <div class="calculator-buttons">
+                <button class="clear" data-action="clear">AC</button>
+                <button data-action="delete">⌫</button>
+                <button data-action="percent">%</button>
+                <button class="operator" data-value="/">÷</button>
+                <button data-value="7">7</button>
+                <button data-value="8">8</button>
+                <button data-value="9">9</button>
+                <button class="operator" data-value="*">x</button>
+                <button data-value="4">4</button>
+                <button data-value="5">5</button>
+                <button data-value="6">6</button>
+                <button class="operator" data-value="-">-</button>
+                <button data-value="1">1</button>
+                <button data-value="2">2</button>
+                <button data-value="3">3</button>
+                <button class="operator" data-value="+">+</button>
+                <button class="zero" data-value="0">0</button>
+                <button data-value=".">.</button>
+                <button class="equals" data-action="equals">=</button>
+            </div>
+        </div>
+    `
+);
+
+const calculatorIcon = document.querySelector("#calculator");
+
+calculatorIcon.addEventListener("click", () => {
+    handleIconTap(calculatorIcon, calculatorWindow);
+});
+
+let calculatorExpression = "";
+
+const calculatorDisplay =
+    calculatorWindow.querySelector("#calculatorDisplay");
+
+const calculatorButtons =
+    calculatorWindow.querySelectorAll("button");
+
+function updateCalculatorDisplay() {
+    if (calculatorExpression === "") {
+        calculatorDisplay.textContent = "0";
+    } else {
+        calculatorDisplay.textContent = calculatorExpression;
+    }
+}
+
+
+function addToCalculator(value) {
+    calculatorExpression += value;
+    updateCalculatorDisplay();
+}
+
+
+function clearCalculator() {
+    calculatorExpression = "";
+    updateCalculatorDisplay();
+}
+
+
+function deleteCalculator() {
+    calculatorExpression = calculatorExpression.slice(0, -1);
+    updateCalculatorDisplay();
+}
+
+
+function calculateResult() {
+    if (calculatorExpression === "") {
+        return;
+    }
+
+    try {
+        const result = Function(
+            `"use strict"; return (${calculatorExpression})`
+        )();
+        calculatorExpression = String(result);
+        updateCalculatorDisplay();
+    } catch {
+        calculatorDisplay.textContent = "Error";
+        calculatorExpression = "";
+    }
+}
+
+
+function calculatePercent() {
+    if (calculatorExpression === "") {
+        return;
+    }
+
+    try {
+        const result = Function(
+            `"use strict"; return (${calculatorExpression})`
+        )();
+        calculatorExpression = String(result / 100);
+        updateCalculatorDisplay();
+    } catch {
+        calculatorDisplay.textContent = "Error";
+        calculatorExpression = "";
+    }
+}
+
+calculatorButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const value = button.dataset.value;
+        const action = button.dataset.action;
+        if (action === "clear") {
+            clearCalculator();
+            return;
+        }
+
+        if (action === "delete") {
+            deleteCalculator();
+            return;
+        }
+
+        if (action === "percent") {
+            calculatePercent();
+            return;
+        }
+
+        if (action === "equals") {
+            calculateResult();
+            return;
+        }
+
+        if (value) {
+            addToCalculator(value);
+        }
+    });
+});
