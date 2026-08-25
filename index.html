@@ -3,31 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phan Os</title>
+    <title>phanOS</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <header class="top-bar">
+      <p>PHAN OS</p>
+      <p id="timeElement"></p>
+    </header>
 
-    <div class="top-bar">
-        <p>PHAN OS</p>
-        <p id="timeElement">TIME</p>
-    </div>
+    <main id="desktop">
+      <div class="app-icon" id="stopwatch">
+        <img src="./Images/stopwatch.png" alt="Stopwatch" />
+      </div>
 
-    <div id="welcome" class="welcome">
+      <div class="app-icon" id="socials">
+        <img src="./Images/socials.png" alt="Socials" />
+      </div>
+      <div class="app-icon" id="welcomeApp">
+        <img src="./Images/pfp.jpg" alt="Welcome" />
+      </div>
+      <div class="app-icon" id="cookieClicker">
+        <img src="./Images/pfp.jpg" alt="Cookie Clicker" />
+      </div>
+      <div class="app-icon" id="aboutMe">
+        <img src="./Images/pfp.jpg" alt="About Me" />
+      </div>
+      <div class="app-icon" id="terminal">
+        <img src="./Images/terminal.png" alt="Terminal" />
+      </div>
+    </main>
+
+    <div id="welcome" class="window welcome-window">
+      <div class="window-header">
+        <span>Welcome</span>
+        <button class="close-button">x</button>
+      </div>
+
+      <div class="window-content">
         <h6>How did you get this website??? Anyways...</h6>
-        <img src="./Images/pfp.jpg" alt="My PFP" height="64px" class="pfp" id="welcomeopen">
+        <img src="./Images/pfp.jpg" alt="My PFP" class="pfp" />
         <h1>phanOS</h1>
         <h2>An OS all about phantom-ascii (me)</h2>
         <h5>(movable window btw)</h5>
-        <p style="cursor: pointer; border-radius: 10px; border: solid; border-width: 1px; width: 50px; margin: auto;" id="welcomeclose">Close</p>
+      </div>
     </div>
 
-    <div id="desktopApps" style="padding-top: 64px; padding-left: 16px;">
-        <div style="padding: 10px; width: fit-content" id="stopwatch" class="stopwatch">
-            <img src="./Images/stopwatch.png" width="164px">
-        </div>
-    </div>
-
-      <script src="script.js"></script>
-    </body>
+    <script src="script.js"></script>
+  </body>
 </html>
