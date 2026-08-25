@@ -424,3 +424,140 @@ body {
 .calculator-buttons .zero {
     grid-column: span 2;
 }
+
+.clock-app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px 10px 10px;
+}
+
+.analog-clock {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    margin: 5px auto 25px;
+    border: 2px solid #010a0e;
+    border-radius: 50%;
+    background: #ffffff66;
+    backdrop-filter: blur(5px);
+}
+
+.analog-clock::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      #010a0e 0deg 1deg,
+      transparent 1deg 30deg
+    );
+  mask:
+    radial-gradient(
+      transparent 0 91%,
+      #000 92% 100%
+    );
+}
+
+.clock-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: bottom center;
+  border-radius: 10px;
+}
+
+.clock-hour {
+  width: 5px;
+  height: 55px;
+  background: #010a0e;
+  margin-left: -2.5px;
+}
+
+.clock-minute {
+  width: 3px;
+  height: 78px;
+  background: #010a0e;
+  margin-left: -1.5px;
+}
+
+.clock-second {
+  width: 2px;
+  height: 88px;
+  background: #0ceeee;
+  margin-left: -1px;
+}
+
+.clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  background: #010a0e;
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.clock-time {
+  font-family: monospace;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.clock-date {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.notes-app {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#notesText {
+  width: 100%;
+  height: 280px;
+  box-sizing: border-box;
+  padding: 15px;
+  resize: none;
+  border: 1px solid #0002;
+  border-radius: 10px;
+  background: #ffffff88;
+  color: #010a0e;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  outline: none;
+}
+
+#notesText:focus {
+  border-color: #0ceeee;
+}
+
+.notes-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3px;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+#clearNotes {
+  align-self: flex-start;
+  padding: 8px 15px;
+  border: 1px solid #0002;
+  border-radius: 8px;
+  background: #ffffff99;
+  cursor: pointer;
+}
+
+#clearNotes:hover {
+  background: #ff777766;
+}

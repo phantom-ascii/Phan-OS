@@ -34,12 +34,18 @@ function deselectIcon(element) {
 }
 
 function handleIconTap(icon, appWindow) {
+  const allIcons = document.querySelectorAll(".app-icon");
   if (icon.classList.contains("selected")) {
     deselectIcon(icon);
     openWindow(appWindow);
-  } else {
-    selectIcon(icon);
+    return;
   }
+  allIcons.forEach((otherIcon) => {
+    if (otherIcon !== icon) {
+      deselectIcon(otherIcon);
+    }
+  });
+  selectIcon(icon);
 }
 
 function dragElement(element) {
@@ -593,3 +599,116 @@ calculatorButtons.forEach((button) => {
         }
     });
 });
+
+const clockWindow = createAppWindow(
+  "clockWindow",
+  "Clock",
+  `
+    <div class="clock-app">
+      <div class="analog-clock">
+        <div class="clock-hand clock-hour" id="clockHour"></div>
+        <div class="clock-hand clock-minute" id="clockMinute"></div>
+        <div class="clock-hand clock-second" id="clockSecond"></div>
+        <div class="clock-center"></div>
+      </div>
+      <div class="clock-time" id="clockTime">
+        00:00:00
+      </div>
+      <div class="clock-date" id="clockDate">
+        Tuesday, 25 August 2026
+      </div>
+    </div>
+    `
+);
+
+const clockIcon = document.querySelector("#clock");
+clockIcon.addEventListener("click", () => {
+  handleIconTap(clockIcon, clockWindow);
+});
+
+const clockHour = clockWindow.querySelector("#clockHour");
+const clockMinute = clockWindow.querySelector("#clockMinute");
+const clockSecond = clockWindow.querySelector("#clockSecond");
+const clockTime = clockWindow.querySelector("#clockTime");
+const clockDate = clockWindow.querySelector("#clockDate");
+
+function updateClock() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  const secondDegrees = seconds * 6;
+  const minuteDegrees = minutes * 6 + seconds * 0.1;
+  const hourDegrees = (hours % 12) * 30 + minutes * 0.5;
+
+  clockSecond.style.transform = `rotate(${secondDegrees}deg)`;
+  clockMinute.style.transform = `rotate(${minuteDegrees}deg)`;
+  clockHour.style.transform = `rotate(${hourDegrees}deg)`;
+
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
+  clockTime.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+
+  clockDate.textContent = now.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+const notesWindow = createAppWindow(
+  "notesWindow",
+  "Notes",
+  `
+    <div class="notes-app">
+      <textarea id="notesText" placeholder="Start writing..." spellcheck="true"></textarea>
+      <div class="notes-footer">
+        <span id="notesStatus">Saved</span>
+        <span id="notesCount">0 characters</span>
+      </div>
+      <button id="clearNotes">Clear</button>
+    </div>
+  `
+);
+
+const notesIcon = document.querySelector("#notes");
+notesIcon.addEventListener("click", () => {
+  handleIconTap(notesIcon, notesWindow);
+});
+
+const notesText = notesWindow.querySelector("#notesText");
+const notesStatus = notesWindow.querySelector("#notesStatus");
+const notesCount = notesWindow.querySelector("#notesCount");
+const clearNotes = notesWindow.querySelector("#clearNotes");
+
+notesText.value = localStorage.getItem("phanNotes") || "";
+
+function updateNotesCount() {
+  const count = notesText.value.length;
+  notesCount.textContent =
+    `${count} characters`;
+}
+
+function saveNotes() {
+  localStorage.setItem("phanNotes", notesText.value);
+  notesStatus.textContent = "Saved";
+  updateNotesCount();
+}
+
+notesText.addEventListener("input", () => {
+  notesStatus.textContent = "Saving...";
+  saveNotes();
+});
+
+clearNotes.addEventListener("click", () => {
+  notesText.value = "";
+  saveNotes();
+});
+
+updateNotesCount();
